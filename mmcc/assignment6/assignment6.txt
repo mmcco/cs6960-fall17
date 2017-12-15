@@ -1,0 +1,12 @@
+The kernel validates all of read(2)'s arguments using the functions argfd(),
+argint(), and argptr(). If any of these functions reports an error, the read(2)
+call fails immediately. The argptr() function checks whether the memory range
+supplied by the process falls within its address space.
+
+Conveniently, the argptr() function is able to check that the process has
+permission to access entire specified region, and therefore no further checks
+are needed in the fileread() function. This is possible because the argint()
+function validates and parses the size argument, providing it to argptr().
+
+Using this simplifying approach, sys_read() detects both bad pointers and
+over-long reads in one condition.
